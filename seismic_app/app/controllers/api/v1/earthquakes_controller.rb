@@ -2,19 +2,53 @@ module Api
     module V1
       class EarthquakesController < ApplicationController
         def index
-          earthquakes = Earthquake.all.order(created_at: :desc)
-          earthquakes = earthquakes.where(magType: params[:filters][:mag_type]) if params[:filters]&.dig(:mag_type)
-          earthquakes = paginate(earthquakes, params[:page], params[:per_page])
-  
-          render json: EarthquakeSerializer.new(earthquakes).serialized_json
+          earthquakes = Earthquake.order(created_at: :desc)
+          earthquakes = earthquakes.page(params[:page]).per(params[:per_page] || 100)
+      
+          render json: {
+            earthquakes: ActiveModelSerializers::SerializableResource.new(earthquakes).as_json,
+            pagination: pagination_meta(earthquakes)
+          }, status: :ok
         end
   
+
         private
   
-        def paginate(items, page, per_page)
-          per_page = [per_page.to_i, 1000].min
-          items.paginate(page: page, per_page: per_page)
+        def pagination_meta(earthquakes)
+          {
+            current_page: earthquakes.current_page,
+            next_page: earthquakes.next_page,
+            prev_page: earthquakes.prev_page,
+            total_pages: earthquakes.total_pages,
+            total_count: earthquakes.total_count
+          }
         end
+
+
+        def show
+          earthquake = Earthquake.find(params[:id])
+          render json: earthquake, include: [:comments]
+        rescue ActiveRecord::RecordNotFound
+          render json: { error: "Not Found" }, status: :not_found
+        end
+        
+
+        def create_comment
+          comment = Comment.new(comment_params)
+          if comment.save
+            render json: comment, status: :created
+          else
+            render json: comment.errors, status: :unprocessable_entity
+          end
+        end
+        
+        private
+        
+        def comment_params
+          params.require(:comment).permit(:body).merge(feature_id: params[:feature_id])
+        end
+
       end
     end
   end
+  

@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-import CommentsForm from './components/CommentsForm';
-import FeaturesList from './components/FeaturesList';
-
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { EarthquakeProvider } from './contexts/EarthquakeContext';
+import EarthquakeList from './components/EarthquakeList';
+import EarthquakeDetails from './components/EarthquakeDetails';
 
 function App() {
-  const [selectedFeatureId, setSelectedFeatureId] = useState(null);
-
-  const handleFeatureSelect = (featureId) => {
-    setSelectedFeatureId(featureId);
-  };
-
   return (
-    <div>
-      <CommentsForm featureId={selectedFeatureId} />
-      <h1>Info Sismos</h1>
-      <FeaturesList onFeatureSelect={handleFeatureSelect} />
-    </div>
+    <Router>
+      <EarthquakeProvider>
+        <div>
+          <Routes>
+            <Route path="/" element={<EarthquakeList />} />
+            <Route path="/earthquake/:earthquakeId" element={<EarthquakeDetails />} />
+          </Routes>
+        </div>
+      </EarthquakeProvider>
+    </Router>
   );
 }
 

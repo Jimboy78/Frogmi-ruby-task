@@ -30,7 +30,9 @@ class Earthquake < ApplicationRecord
     validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
   
     before_save :check_coordinates_presence
-  
+
+    has_many :comments
+
     private
   
     def check_coordinates_presence

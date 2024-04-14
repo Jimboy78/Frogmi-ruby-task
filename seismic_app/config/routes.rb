@@ -1,8 +1,7 @@
 Rails.application.routes.draw do
-  # Namespace for API to segregate from any future web routes cleanly
   namespace :api do
-    namespace :v1 do  # Versioning the API
-      resources :features, only: [:index], path: 'earthquakes' do
+    namespace :v1 do
+      resources :earthquakes, only: [:index, :show] do  # Agregado :show aquí
         resources :comments, only: [:create]
       end
     end
