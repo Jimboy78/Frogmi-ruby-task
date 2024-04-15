@@ -3,6 +3,7 @@
 # Table name: comments
 #
 #  id            :bigint           not null, primary key
+#  body          :text
 #  content       :text
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
@@ -17,8 +18,6 @@
 #  fk_rails_...  (earthquake_id => earthquakes.id)
 #
 class Comment < ApplicationRecord
-    belongs_to :earthquake
-    belongs_to :feature
-  
-    validates :body, presence: true
-  end
+  belongs_to :earthquake
+  validates :body, presence: true
+end

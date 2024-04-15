@@ -14,8 +14,8 @@ function EarthquakeList() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const fetchEarthquakes = (page, rowsPerPage) => {
-    setIsLoading(true);  // Set loading to true to show the spinner
-    setEarthquakes([]);  // Optionally clear the current earthquakes data to avoid displaying old data
+    setIsLoading(true);
+    setEarthquakes([]);
 
     fetch(`http://localhost:8000/api/v1/earthquakes?page=${page}&per_page=${rowsPerPage}`)
       .then((response) => response.json())
@@ -26,11 +26,11 @@ function EarthquakeList() {
           total_pages: data.pagination.total_pages,
           total_count: data.pagination.total_count,
         });
-        setIsLoading(false);  // Set loading to false once data is fetched
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
-        setIsLoading(false);  // Ensure loading is false if an error occurs
+        setIsLoading(false);
       });
   };
 

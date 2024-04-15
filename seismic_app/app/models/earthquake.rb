@@ -31,8 +31,8 @@ class Earthquake < ApplicationRecord
   
     before_save :check_coordinates_presence
 
-    has_many :comments
-
+    has_many :comments, dependent: :destroy
+    
     private
   
     def check_coordinates_presence

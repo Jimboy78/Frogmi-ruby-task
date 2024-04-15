@@ -26,10 +26,12 @@ module Api
 
 
         def show
-          earthquake = Earthquake.find(params[:id])
-          render json: earthquake, include: [:comments]
-        rescue ActiveRecord::RecordNotFound
-          render json: { error: "Not Found" }, status: :not_found
+          earthquake = Earthquake.find_by(id: params[:id])
+          if earthquake
+            render json: earthquake, include: [:comments]
+          else
+            render json: { error: "Not Found" }, status: :not_found
+          end
         end
         
 

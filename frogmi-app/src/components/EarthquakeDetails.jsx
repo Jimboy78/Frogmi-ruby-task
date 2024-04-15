@@ -1,21 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link as RouterLink } from 'react-router-dom';
 import { Card, CardContent, Typography, Grid, Button, Link, Box } from '@mui/material';
 import CommentsForm from './CommentsForm';
-import { useEarthquakes } from '../contexts/EarthquakeContext'; // Import the hook
+import { useEarthquakes } from '../contexts/EarthquakeContext';
 
 function EarthquakeDetails() {
     const { earthquakeId } = useParams();
-    const { earthquakes } = useEarthquakes(); // Access the context
+    const { earthquakes } = useEarthquakes();
     const earthquake = earthquakes.find(eq => eq.id.toString() === earthquakeId);
 
-    if (!earthquake) {
-        return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-            <Typography variant="h4" component="h2">Earthquake details not found</Typography>
-        </Box>;
-    }
+    const [comments, setComments] = useState([]);
 
-    const comments = earthquake.comments || []; // Ensure comments is always defined
+    useEffect(() => {
+        async function fetchEarthquakeAndComments() {
+            if (!earthquake) {
+                try {
+                    const res = await fetch(`http://localhost:8000/api/v1/earthquakes/${earthquakeId}`);
+                    const data = await res.json();
+                    
+                } catch (error) {
+                    console.error('Failed to fetch earthquake details:', error);
+                }
+            }
+
+            try {
+                const res = await fetch(`http://localhost:8000/api/v1/earthquakes/${earthquakeId}/comments`);
+                const data = await res.json();
+                setComments(data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))); 
+            } catch (error) {
+                console.error('Failed to fetch comments:', error);
+            }
+        }
+
+        fetchEarthquakeAndComments();
+    }, [earthquakeId, earthquake]);
+
+    const handleAddComment = (newComment) => {
+        setComments(prevComments => [newComment, ...prevComments]); 
+    };
+
+    if (!earthquake) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <Typography variant="h4" component="h2">Earthquake details not found</Typography>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ flexGrow: 1, m: 2 }}>
@@ -38,7 +68,7 @@ function EarthquakeDetails() {
                     </Card>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <CommentsForm earthquakeId={earthquakeId} />
+                    <CommentsForm earthquakeId={earthquakeId} onAddComment={handleAddComment} />
                 </Grid>
                 <Grid item xs={12}>
                     <Card raised>
@@ -46,7 +76,7 @@ function EarthquakeDetails() {
                             <Typography variant="h6" component="h3">Comments</Typography>
                             {comments.length > 0 ? comments.map((comment, index) => (
                                 <Typography key={index} variant="body2" style={{ marginTop: '10px' }}>
-                                    {comment.body}
+                                    {comment.body} - {new Date(comment.created_at).toLocaleString()}
                                 </Typography>
                             )) : <Typography variant="body2" color="textSecondary">No comments yet.</Typography>}
                         </CardContent>
