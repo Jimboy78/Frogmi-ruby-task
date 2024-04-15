@@ -10,13 +10,12 @@ Este proyecto está dividido en dos principales subdirectorios: `backend` y `fro
 
 ### Backend
 
-1. **Optimización de Queries**: Evaluar y optimizar las consultas a la base de datos para mejorar el rendimiento.
-2. **Autenticación**: Implementar un sistema de autenticación para proteger las rutas críticas del API.
+1. **Autenticación**: Implementar un sistema de autenticación para proteger las rutas críticas del API.
+2. **Test de las APIs**: Implementar un sistema de teste que corrobore el buen funcionamiento de las APIs.
 
 ### Frontend
 
 1. **Mejoras en UI/UX**: Rediseñar componentes para mejorar la experiencia de usuario.
-2. **State Management**: Evaluar la utilización de herramientas como Redux o Context API para gestionar el estado global más eficientemente.
 
 ### Infraestructura
 
