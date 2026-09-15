@@ -25,8 +25,13 @@ export default function QuakeMap({ quakes, selected, focus, onSelect, center = [
   return (
     <MapContainer center={center} zoom={zoom} minZoom={2} worldCopyJump preferCanvas className="map">
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        attribution="Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ"
+        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+        maxZoom={16}
+      />
+      <TileLayer
+        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
+        maxZoom={16}
       />
       {quakes.map((q) => {
         const isSelected = q.id === selected;

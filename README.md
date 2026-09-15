@@ -1,11 +1,30 @@
-# Earthquake Tracker
+# Seismic — Earthquake Tracker
 
-A Ruby on Rails API paired with a React frontend for browsing real-time earthquake data, viewing event details, and leaving comments on individual earthquakes.
+A live global earthquake monitor: a React dashboard on real-time USGS data, backed by a Ruby on Rails API that ingests the USGS catalog into PostgreSQL and stores comments per event.
+
+**Live demo:** https://seismic-monitor-eight.vercel.app
+
+## Features
+
+- **Live feed** from the USGS Earthquake Hazards Program — past hour / 24 h / 7 days / 30 days, magnitude feeds (All, M1+, M2.5+, M4.5+, Significant), min-magnitude slider, place search, latest/strongest sort
+- **Auto-refresh every 60 s** with a LIVE indicator and toasts when new events appear
+- **Dark interactive world map** (Leaflet + CARTO) — markers scaled and colored by magnitude, animated shockwaves on M4.5+ events, locate-on-map from the list
+- **Stats**: event count, strongest event, average depth, felt reports, tsunami flags and a magnitude histogram
+- **Event page**: glowing magnitude, PAGER alert and tsunami chips, depth gauge (surface → upper mantle), regional mini map, nearby activity within 250 km over 30 days, and field notes (comments)
 
 ## Structure
 
-- `/seismic_app`: Ruby on Rails API (`Earthquake` and `Comment` models, versioned API controllers).
-- `/frogmi-app`: React frontend (list view, detail view, comment form) using the Context API for state.
+- `/frogmi-app` — React frontend (Create React App, React Router, Leaflet). Reads USGS GeoJSON directly, so it deploys as a static site.
+- `/seismic_app` — Rails 7 API (PostgreSQL): `Earthquake` and `Comment` models, versioned `api/v1` controllers, `usgs:fetch_data` rake task that upserts the last month of events by USGS id.
+
+### API
+
+| Method | Path | Description |
+| --- | --- | --- |
+| GET | `/api/v1/earthquakes?page=&per_page=&min_magnitude=` | Paginated events, newest first |
+| GET | `/api/v1/earthquakes/:id` | One event (numeric id or USGS id) with comments |
+| GET | `/api/v1/earthquakes/:id/comments` | Comments for an event |
+| POST | `/api/v1/earthquakes/:id/comments` | `{ "comment": { "body": "..." } }` |
 
 ## Run locally
 
@@ -14,27 +33,13 @@ A Ruby on Rails API paired with a React frontend for browsing real-time earthqua
 cd seismic_app
 bundle install
 rails db:setup
-rails server
+rails usgs:fetch_data          # ingest the last 30 days from USGS
+CORS_ORIGINS=localhost:3000 rails server -p 8000
 
 # Frontend
 cd frogmi-app
 npm install
-npm start
+REACT_APP_API_URL=http://localhost:8000 npm start
 ```
 
-## Mejoras Sugeridas
-
-### Backend
-
-1. **Autenticación**: Implementar un sistema de autenticación para proteger las rutas críticas del API.
-2. **Test de las APIs**: Implementar un sistema de teste que corrobore el buen funcionamiento de las APIs.
-
-### Frontend
-
-1. **Mejoras en UI/UX**: Rediseñar componentes para mejorar la experiencia de usuario.
-
-### Infraestructura
-
-1. **Dockerización**: Crear `Dockerfile` y `docker-compose.yml` para facilitar el despliegue y la configuración del entorno de desarrollo.
-2. **CI/CD**: Implementar pipelines de integración y despliegue continuo para automatizar la prueba y lanzamiento de nuevas versiones del software.
-
+Without `REACT_APP_API_URL` the frontend runs standalone and keeps comments in the browser (this is how the public demo runs).

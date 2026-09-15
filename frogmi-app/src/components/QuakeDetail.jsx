@@ -67,7 +67,7 @@ export default function QuakeDetail() {
     ['Felt reports', quake.felt ?? 0],
     ['Significance', quake.sig ?? '—'],
     ['Intensity (MMI)', quake.mmi ? quake.mmi.toFixed(1) : '—'],
-    ['Review status', quake.status],
+    ['Review status', quake.status ? quake.status[0].toUpperCase() + quake.status.slice(1) : '—'],
   ];
 
   return (
