@@ -1,10 +1,26 @@
-# Documentación General del Proyecto
-Este proyecto está dividido en dos principales subdirectorios: `backend` y `frontend`, correspondiendo a las partes de Ruby on Rails y React, respectivamente.
+# Earthquake Tracker
 
-## Estructura del Repositorio
+A Ruby on Rails API paired with a React frontend for browsing real-time earthquake data, viewing event details, and leaving comments on individual earthquakes.
 
-- `/backend`: Contiene todos los archivos de Ruby on Rails del servidor API.
-- `/frontend`: Contiene los archivos de React para la interfaz de usuario.
+## Structure
+
+- `/seismic_app`: Ruby on Rails API (`Earthquake` and `Comment` models, versioned API controllers).
+- `/frogmi-app`: React frontend (list view, detail view, comment form) using the Context API for state.
+
+## Run locally
+
+```bash
+# API
+cd seismic_app
+bundle install
+rails db:setup
+rails server
+
+# Frontend
+cd frogmi-app
+npm install
+npm start
+```
 
 ## Mejoras Sugeridas
 
