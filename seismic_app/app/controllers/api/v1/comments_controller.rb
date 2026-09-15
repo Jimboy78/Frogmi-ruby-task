@@ -29,7 +29,8 @@ module Api
       private
 
       def set_earthquake
-        @earthquake = Earthquake.find_by(id: params[:earthquake_id])
+        # The frontend addresses events by their USGS id; keep numeric ids working too.
+        @earthquake = Earthquake.find_by(external_id: params[:earthquake_id]) || Earthquake.find_by(id: params[:earthquake_id])
       end
 
       def comment_params

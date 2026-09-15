@@ -17,7 +17,7 @@ namespace :usgs do
         earthquake.assign_attributes(
           magnitude: feature['properties']['mag'],
           place: feature['properties']['place'],
-          time: Time.at(feature['properties']['time'] / 1000.0).to_datetime,
+          time: feature['properties']['time'], # epoch ms — the column is a bigint
           url: feature['properties']['url'],
           tsunami: feature['properties']['tsunami'],
           magType: feature['properties']['magType'],

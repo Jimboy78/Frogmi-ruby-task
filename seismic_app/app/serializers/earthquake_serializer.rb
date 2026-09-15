@@ -22,12 +22,10 @@
 #  index_earthquakes_on_external_id  (external_id) UNIQUE
 #
 class EarthquakeSerializer < ActiveModel::Serializer
-  attributes :id, :magnitude, :place, :time, :url, :tsunami, :magType, :title, :longitude, :latitude, :depth
-  attribute :external_url do
-    object.url
-  end
-  
-  def time
-    Time.at(object.time).utc.strftime("%Y-%m-%d %H:%M:%S") if object.time
+  attributes :id, :external_id, :magnitude, :place, :time, :url, :tsunami, :magType, :title, :longitude, :latitude, :depth
+
+  # Stored as epoch milliseconds (same unit as the USGS feed); also expose ISO 8601 for convenience.
+  attribute :time_iso do
+    Time.at(object.time / 1000.0).utc.iso8601 if object.time
   end
 end

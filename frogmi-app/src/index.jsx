@@ -1,14 +1,11 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import 'leaflet/dist/leaflet.css';
+import './styles.css';
 import App from './App';
-import { CssBaseline } from '@mui/material';
 
-const container = document.getElementById('root');
-const root = createRoot(container);
-
-root.render(
+createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <CssBaseline />
     <App />
   </React.StrictMode>
 );
